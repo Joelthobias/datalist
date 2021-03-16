@@ -92,7 +92,6 @@ i {
 }
 
 #datalist-ul li:hover {
-background : #0e0e0e;
-
+	background: #0e0e0e;
 	color: #fefefe;
 }
