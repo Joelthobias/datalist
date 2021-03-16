@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data list</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.css">
+</head>
+<body>
+    <div id="datalist">
+	    <input id="datalist-input" type="text" placeholder="input here">
+	    <i id="datalist-icon" class="icon iconfont icon-arrow"></i>
+	    <ul id="datalist-ul"></ul>
+    </div>
+
+    <script>
+        class DataList {
+            constructor(containerId, inputId, listId, options) {
+                this.containerId = containerId;
+                this.inputId = inputId;
+                this.listId = listId;
+                this.options = options;
+            }
+
+            create(filter = "") {
+                const list = document.getElementById(this.listId);
+                const filterOptions = this.options.filter(
+                    d => filter === "" || d.text.includes(filter)
+                );
+
+                if (filterOptions.length === 0) {
+                    list.classList.remove("active");
+                } else {
+                    list.classList.add("active");
+                }
+
+                list.innerHTML = filterOptions
+                    .map(o => `<li id=${o.value}>${o.text}</li>`)
+                    .join("");
+            }
+
+            addListeners(datalist) {
+                const container = document.getElementById(this.containerId);
+                const input = document.getElementById(this.inputId);
+                const list = document.getElementById(this.listId);
+                container.addEventListener("click", e => {
+                    if (e.target.id === this.inputId) {
+                        container.classList.toggle("active");
+                    } else if (e.target.id === "datalist-icon") {
+                        container.classList.toggle("active");
+                        input.focus();
+                    }
+                });
+
+                input.addEventListener("input", function(e) {
+                    if (!container.classList.contains("active")) {
+                        container.classList.add("active");
+                    }
+
+                    datalist.create(input.value);
+                });
+
+                list.addEventListener("click", function(e) {
+                    if (e.target.nodeName.toLocaleLowerCase() === "li") {
+                        input.value = e.target.innerText;
+                        container.classList.remove("active");
+                    }
+                });
+            }
+        }
+
+        const data = [
+            { value: "1", text: "orange" },
+            { value: "2", text: "apple" },
+            { value: "3", text: "iphone" },
+            { value: "4", text: "nokia" },
+            { value: "5", text: "samsung" },
+            { value: "6", text: "turf" },
+            { value: "7", text: "redmi" },
+            { value: "8", text: "pubg" }
+        ];
+
+        const datalist = new DataList(
+            "datalist",
+            "datalist-input",
+            "datalist-ul",
+            data
+        );
+        datalist.create();
+        datalist.addListeners(datalist);
+        
+    </script>
+</body>
+</html>
